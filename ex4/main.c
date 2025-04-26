@@ -16,11 +16,13 @@ typedef struct {
     float salary_net;
 } Employee;
 
+// Função read_employees:
+// Lê os dados dos funcionários e os armazena no vetor 'employees'
 int read_employees(Employee *employees) {
     int count;
     printf("Digite o número de funcionários: ");
     scanf("%d", &count);
-    getchar(); 
+    getchar(); // Consome o '\n'
 
     for (int i = 0; i < count; i++) {
         printf("\nFuncionário %d\n", i + 1);
@@ -43,16 +45,22 @@ int read_employees(Employee *employees) {
     return count;
 }
 
+// Função calculate_salaries:
+// Calcula os salários com base nas horas normais, extras, alíquota e desconto do INSS
 void calculate_salaries(Employee *emp, float reference_salary) {
+    // Define um multiplicador baseado na classe do funcionário
     float multiplier = (emp->class == 1) ? 1.3 : 1.9;
     emp->hourly_rate = reference_salary * multiplier;
     emp->salary_normal = emp->normal_hours * emp->hourly_rate;
     emp->salary_extra = emp->extra_hours * emp->hourly_rate * 1.3;
 
+    // Calcula a dedução do INSS e o salário líquido
     emp->inss = (emp->salary_normal + emp->salary_extra) * 0.11;
     emp->salary_net = (emp->salary_normal + emp->salary_extra) - emp->inss;
 }
 
+// Função print_paycheck:
+// Imprime o contracheque do funcionário com todos os detalhes dos cálculos
 void print_paycheck(Employee *emp) {
     printf("\n-----------------------------------------\n");
     printf("NÚMERO DE INSCRIÇÃO: %d\tNOME: %s\n", emp->id, emp->name);
@@ -63,20 +71,23 @@ void print_paycheck(Employee *emp) {
     printf("-----------------------------------------\n");
 }
 
-
 int main() {
     Employee employees[MAX];
     float reference_salary;
 
+    // Solicita o salário de referência a partir do qual os demais cálculos serão baseados.
     printf("Digite o salário de referência: ");
     scanf("%f", &reference_salary);
 
+    // Lê os dados dos funcionários.
     int count = read_employees(employees);
 
+    // Calcula os salários para cada funcionário.
     for (int i = 0; i < count; i++) {
         calculate_salaries(&employees[i], reference_salary);
     }
 
+    // Imprime o contracheque de cada funcionário.
     for (int i = 0; i < count; i++) {
         print_paycheck(&employees[i]);
     }
